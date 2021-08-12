@@ -7,7 +7,7 @@ from requests.exceptions import ConnectionError
 import traceback
 
 __version__ = "2.0.1"
-__author__ = "Lord Vader"
+__author__ = "Mountain Dew#0933"
 __description__ = "A Python recruiter for Politics and War"
 
 
