@@ -165,7 +165,7 @@ def run():
                         "subject": sub,
                         "message": msg.replace("%leader%", nation["leader"]).replace("%nation%", nation["nation"])
                     }
-                    sendResult = s.post("/api/send-message/?key=" + apiky, data=message_data)
+                    sendResult = s.post("https://politicsandwar.com/api/send-message/?key=" + apiky, data=message_data)
                     print(f'Message #{sent} Sent to: {nation["leader"]} Nation ID: {nation["nationid"]} | {sendResult}')
                     sent_to.append(nation["nationid"])
 
