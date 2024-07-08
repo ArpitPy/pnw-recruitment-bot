@@ -12,8 +12,6 @@ __description__ = "A Python recruiter for Politics and War"
 
 
 def get_inputs():
-    usrnme = input("Please enter your Politics and War login email!\n")
-    psswrd = input("Please enter your Politics and War login password!\n")
     apikey = input("Please enter your Politics and War api key!\n")
 
     try:
