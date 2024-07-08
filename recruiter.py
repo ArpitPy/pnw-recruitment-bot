@@ -162,8 +162,8 @@ def run():
                         "subject": sub,
                         "message": msg.replace("%leader%", nation["leader"]).replace("%nation%", nation["nation"])
                     }
-                    s.post("/api/send-message/?key=" + apiky, data=message_data)
-                    print(f'Message #{sent} Sent to: {nation["leader"]} Nation ID: {nation["nationid"]}')
+                    sendResult = s.post("/api/send-message/?key=" + apiky, data=message_data)
+                    print(f'Message #{sent} Sent to: {nation["leader"]} Nation ID: {nation["nationid"]} | {sendResult}')
                     sent_to.append(nation["nationid"])
 
                 if nation["nationid"] in sent_to and nation["allianceid"] != tgtaa:
