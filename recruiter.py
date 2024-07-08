@@ -12,8 +12,6 @@ __description__ = "A Python recruiter for Politics and War"
 
 
 def get_inputs():
-    usrnme = input("Please enter your Politics and War login email!\n")
-    psswrd = input("Please enter your Politics and War login password!\n")
     apikey = input("Please enter your Politics and War api key!\n")
 
     try:
@@ -148,43 +146,29 @@ def run():
         print("Nations Data Retrieved")
 
         with requests.Session() as s:
-            login_data = {
-                "email": lgusr,
-                "password": lgpsw,
-                "loginform": "Login"
-            }
-            delta = s.post("https://politicsandwar.com/login/", data=login_data)
-            if "Login Failure" in delta.text:
-                print("There was a problem logging in! Reconfigure your credentials and try again!")
-                get_inputs()
+            sent = 0
+            sent_to = get_sent()
+            
+            for nation in nations_data:
+                if all(i for i in (nation['cities'] >= mncit,
+                                    nation['allianceid'] == tgtaa,
+                                    int(nation['minutessinceactive']) < 1440,
+                                    int(nation['nationid']) not in sent_to,
+                                    int(nation['nationid']) != 6)):
 
-            else:
-                sent = 0
-                sent_to = get_sent()
+                    sent += 1
+                    receiver = nation['nationid']
+                    message_data = {
+                        "to": receiver,
+                        "subject": sub,
+                        "message": msg.replace("%leader%", nation["leader"]).replace("%nation%", nation["nation"])
+                    }
+                    sendResult = s.post("https://politicsandwar.com/api/send-message/?key=" + apiky, data=message_data)
+                    print(f'Message #{sent} Sent to: {nation["leader"]} Nation ID: {nation["nationid"]} | {sendResult}')
+                    sent_to.append(nation["nationid"])
 
-                for nation in nations_data:
-                    if all(i for i in (nation['cities'] >= mncit,
-                                       nation['allianceid'] == tgtaa,
-                                       int(nation['minutessinceactive']) < 1440,
-                                       int(nation['nationid']) not in sent_to,
-                                       int(nation['nationid']) != 6)):
-
-                        sent += 1
-                        receiver = nation['leader']
-                        message_data = {
-                            "newconversation": "true",
-                            "receiver": receiver,
-                            "carboncopy": "",
-                            "subject": sub,
-                            "body": msg.replace("%leader%", nation["leader"]).replace("%nation%", nation["nation"]),
-                            "sndmsg": "Send Message"
-                        }
-                        s.post("https://politicsandwar.com/inbox/message", data=message_data)
-                        print(f'Message #{sent} Sent to: {nation["leader"]} Nation ID: {nation["nationid"]}')
-                        sent_to.append(nation["nationid"])
-
-                    if nation["nationid"] in sent_to and nation["allianceid"] != tgtaa:
-                        sent_to.remove(nation["nationid"])
+                if nation["nationid"] in sent_to and nation["allianceid"] != tgtaa:
+                    sent_to.remove(nation["nationid"])
 
                 set_sent(sent_to)
 
