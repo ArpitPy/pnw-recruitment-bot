@@ -148,6 +148,9 @@ def run():
         print("Nations Data Retrieved")
 
         with requests.Session() as s:
+            sent = 0
+            sent_to = get_sent()
+            
             for nation in nations_data:
                 if all(i for i in (nation['cities'] >= mncit,
                                     nation['allianceid'] == tgtaa,
